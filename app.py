@@ -5,11 +5,14 @@ from flasgger import Swagger
 
 
 app = Flask(__name__)
+
 app.config['SWAGGER'] = {
     'title': 'My API',
     'uiversion': 3
 }
+
 swagger = Swagger(app)
+
 model = joblib.load(
     "penguin_species_model.pkl"
 )
@@ -98,6 +101,7 @@ def predict():
             if feature not in data
         ]
         
+
         if missing:
             return jsonify({
                 "error": f"Missing features: {missing}"
@@ -131,6 +135,7 @@ def predict():
             "error": str(e)
         }), 500
     
+
 
 if __name__ == "__main__":
     
