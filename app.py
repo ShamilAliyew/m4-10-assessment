@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify
 import joblib
 import pandas as pd
+from flasgger import Swagger
+
 
 app = Flask(__name__)
-
+app.config['SWAGGER'] = {
+    'title': 'My API',
+    'uiversion': 3
+}
+swagger = Swagger(app)
 model = joblib.load(
     "penguin_species_model.pkl"
 )
@@ -26,7 +32,55 @@ def health():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    
+    """
+    Predict Penguin Species
+    ---
+    consumes:
+      - application/json
+
+    parameters:
+      - in: body
+        name: body
+        required: true
+        
+        schema:
+          type: object
+          
+          properties:
+            bill_length_mm:
+              type: number
+              example: 39.1
+              
+            bill_depth_mm:
+              type: number
+              example: 18.7
+              
+            flipper_length_mm:
+              type: number
+              example: 181
+              
+            body_mass_g:
+              type: number
+              example: 3750
+              
+            island:
+              type: string
+              example: Torgersen
+              
+            sex:
+              type: string
+              example: Male
+
+    responses:
+      200:
+        description: Prediction successful
+        
+      400:
+        description: Invalid input
+        
+      500:
+        description: Server error
+    """
     try:
         
         data = request.get_json()
